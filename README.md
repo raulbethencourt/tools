@@ -1,10 +1,13 @@
-## Welcome to GitHub Pages
+## Tools for Raul
 
-You can use the [editor on GitHub](https://github.com/raulbethencourt/tools/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+In here I'm gonna set different utilitis that I will use at my projects
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### How to set up WordPress project at MCIR
 
-### Markdown
+1. Find project.
+First thing to do is check if project its keep it inside gitlab or bitbucket.
+
+2.
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
