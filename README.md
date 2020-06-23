@@ -14,7 +14,7 @@ Once i find my project i'll check if exist rmd file with instructions to make it
 Coz best system i found at this moment to make run projects in locla is devilbox, ill add the project to devilbox flow.
 
 4. Database.
-Then i have to find project database (first in site prod backoffice do db-expor with "wp migrate db"check in lastpass, maybe it is in ovh.phpmyadmin), see in db if it is creats table and delet it and do a search and replace of siteurl for my local url (for exemple: Http://my-projet.loc).
+Then i have to find project database (first in site prod backoffice do db-expor with "wp migrate db", if not check in lastpass, maybe it is in ovh.phpmyadmin), see in db if it is creats table and delet it and do a search and replace of siteurl for my local url (for exemple: Http://my-projet.loc).
 
 5. Phpmyadmin.
 After customize my db, I creats new db in devilbox phpmyadmin and I do import db or I copy past the query in sql.
