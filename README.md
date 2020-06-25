@@ -20,8 +20,11 @@ Then i have to find project database (first in site prod backoffice do db-expor 
 After customize my db, I creats new db in devilbox phpmyadmin and I do import db or I copy past the query in sql.
 
 6. Pakcs.
-If necesary ill do (composer install), or (npm i) or an other command to make work the extensions.
+If necesary ill do (composer install), or (npm i) or an other command to make work the extensions. To do that i have to do it inside the docker container of devil box (./shell.sh) entering command.
 
+### STEP before send projecto prod enviroment.
+
+1. Check all files change it in the process.
 
 ```markdown
 Syntax highlighted code block
