@@ -4,27 +4,27 @@ In here I'm gonna set different utilitis that I will use at my projects
 
 ### How to set up WordPress project at MCIR
 
-1. Find project.
+1. Find project.</br>
 First thing to do is check if project its keep it inside gitlab or bitbucket.
 
-2. Find .rmd file.
+2. Find .rmd file.</br>
 Once i find my project i'll check if exist rmd file with instructions to make it works in local or staging.
 
-3. Add it to devilbox.
+3. Add it to devilbox.</br>
 Coz best system i found at this moment to make run projects in locla is devilbox, ill add the project to devilbox flow.
 
-4. Database.
+4. Database.</br>
 Then i have to find project database (first in site prod backoffice do db-expor with "wp migrate db", if not check in lastpass, maybe it is in ovh.phpmyadmin), see in db if it is creats table and delet it and do a search and replace of siteurl for my local url (for exemple: Http://my-projet.loc).
 
-5. Phpmyadmin.
+5. Phpmyadmin.</br>
 After customize my db, I creats new db in devilbox phpmyadmin and I do import db or I copy past the query in sql.
 
-6. Pakcs.
+6. Pakcs.</br>
 If necesary ill do (composer install), or (npm i) or an other command to make work the extensions. To do that i have to do it inside the docker container of devil box (./shell.sh) entering command.
 
 ### STEP before send projecto prod enviroment.
 
-1. Check all files change it in the process.
+1. Check all files change it in the process.</br>
 
 ```markdown
 Syntax highlighted code block
