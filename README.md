@@ -19,7 +19,10 @@ Then i have to find project database (first in site prod backoffice do db-expor 
 5. **Phpmyadmin.**</br>
 After customize my db, I creats new db in devilbox phpmyadmin and I do import db or I copy past the query in sql.
 
-6. **Pakcs.**</br>
+6. **wp-config.php**
+I configure wp-config file. Always look db_name, db_user, db_password, db_host and always check the prefix in your db!!!
+
+7. **Pakcs.**</br>
 If necesary ill do (composer install), or (npm i) or an other command to make work the extensions. To do that i have to do it inside the docker container of devil box (./shell.sh) entering command.
 
 ### STEP before send projecto prod enviroment.
