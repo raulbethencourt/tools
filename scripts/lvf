@@ -1,0 +1,7 @@
+#!/bin/sh
+
+searchr=$(fd --type f --hidden --exclude .git . "$HOME/" | fzf --preview "bat --color=always --style=numbers --line-range=:500 {}")
+
+if [ -n "$searchr" ]; then
+	lvim "$searchr"
+fi

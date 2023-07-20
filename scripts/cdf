@@ -1,0 +1,7 @@
+#!/bin/sh
+
+searchr=$(fd --type d --hidden --exclude .git . "$HOME/" | fzf)
+
+if [ -n "$searchr" ]; then
+    cd "$searchr" || return
+fi

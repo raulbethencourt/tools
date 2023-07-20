@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Core;
-
 
 class Config
 {
@@ -11,7 +9,7 @@ class Config
 
     public function __construct($file)
     {
-        $this->settings = require($file);
+        $this->settings = require $file;
     }
 
     public static function getInstance($file): Config
@@ -28,6 +26,7 @@ class Config
         if (!isset($this->settings[$key])) {
             return null;
         }
+
         return $this->settings[$key];
     }
 }

@@ -1,7 +1,0 @@
-name: wordpress
-recipe: wordpress
-config:
-  php: '7.4'
-  xdebug: true
-
-  
