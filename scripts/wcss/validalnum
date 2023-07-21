@@ -1,5 +1,5 @@
 #!/bin/sh
-# validAlphaNum--Ensures that input consits only of alphabetical and whitespace
+# validAlphaNum--Ensures that input consists only of alphabetical and whitespace
 #   and numeric characters
 
 validAlphaNum() {
