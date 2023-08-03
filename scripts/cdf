@@ -3,5 +3,6 @@
 searchr=$(fd --type d --hidden --exclude .git . "$HOME/" | fzf)
 
 if [ -n "$searchr" ]; then
-    cd "$searchr" || return
+	echo "cd $searchr"
+	cd "$searchr" || return
 fi
