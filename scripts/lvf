@@ -1,8 +1,13 @@
 #!/bin/sh
 
-searchr=$(fd --type f --hidden --exclude .git . "$HOME/" | fzf --preview "bat --color=always --style=numbers --line-range=:500 {}")
+searchr=$(
+	fd --type f --hidden --exclude .git . "$HOME/" |
+		fzf -i --bind=tab:down --bind=btab:up \
+			--bind=ctrl-g:first --border=none \
+			--preview "bat --color=always --style=numbers --line-range=:500 {}"
+)
 
 if [ -n "$searchr" ]; then
 	echo "lvim $searchr"
-	lvim "$searchr"
+	lvim "$searchr" || exit 1
 fi

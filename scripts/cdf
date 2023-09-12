@@ -1,8 +1,12 @@
 #!/bin/sh
 
-searchr=$(fd --type d --hidden --exclude .git . "$HOME/" | fzf)
+searchr=$(
+	fd --type d --hidden --exclude .git . "$HOME/" |
+		fzf -i --bind=tab:down --bind=btab:up \
+			--bind=ctrl-g:first --border=none
+)
 
 if [ -n "$searchr" ]; then
 	echo "cd $searchr"
-	cd "$searchr" || return
+	cd "$searchr" || exit 1
 fi
