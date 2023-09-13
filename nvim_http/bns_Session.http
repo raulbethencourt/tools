@@ -1,0 +1,8 @@
+# bnsHelp
+GET {{HOST}}/bns_api/bnsSessions/bnsHelp?key={{KEY}}
+
+# getRelatedModulesInfo   
+GET {{HOST}}/index.php?key={{KEY}}&entryPoint=bnsWebServiceSessionCapture&bns_action=getRelatedModulesInfo&id=c7e8f900-3da0-11ee-8b2a-0050569c7b60
+GET {{HOST}}/index.php?key={{KEY}}&entryPoint=bnsWebServiceSessionCapture&bns_action=getRelatedModulesInfo&id=c7e8f900-3da0-11ee-8b2a-0050569c7b60&related_modules=bns_products,contacts
+GET {{HOST}}/bns_api/bnsSessions/bnsRelatedModulesInfo?key={{KEY}}&id=ed6e6cca-ac3f-11ed-b197-0050569c7b60&related_modules=bns_products,contacts
+
