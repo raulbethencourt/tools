@@ -18,17 +18,51 @@ nicenumber() {
 		result="${DD:= '.'}$decimal"
 	fi
 
-    thousands=$integer
+	thousands=$integer
 
-    while [ $thousands -gt 999 ]; do
-        remainder=$(($thousands % 1000))
+	while [ "$thousands" -gt 999 ]; do
+		remainder=$($thousands % 1000)
 
-        # TODO: continue
+		# We need 'remainder' to bet three digits. Do we need to add zeros ?
+		while [ ${#remainder} -lt 3 ]; do # Force leading zeros
+			remainder="0$remainder"
+		done
 
-        echo "$remainder"
-    done
+		result="${TD:=","}${remainder}${result}" # Builds right to left
+		thousands=$($thousands / 1000)           # To left of remainder, if any
+	done
 
-    return
+	nicenum="${thousands}${result}"
+	if [ -n "$2" ]; then
+		echo "$nicenum"
+	fi
+
+	return
 }
 
-nicenumber 2000000.870
+DD="." # Decimal point delimiter, to separate whole and fractional values
+TD="," # Thousands delimiter, to separate every three digits
+
+# BEGIN MAIN SCRIPT
+# =================
+
+while getopts "d:t" opt; do
+	case *"$opt" in
+	d) DD="$OPTARG" ;;
+	t) TD="$OPTARG" ;;
+	esac
+done
+#FIXME: not working
+shift "$($OPTIOND - 1)"
+
+# Input validation
+if [ $# -eq 0 ]; then
+	echo "Usage: $(fasename "$0") [-d c] [-t c] number"
+	echo "  -d specifies the decimal point delimiter"
+	echo "  -t specifies the thousands delimiter"
+	exit 0
+fi
+
+nicenumber "$1" 1 # Second arg forces nicenumber to 'echo' output.
+
+exit 0
