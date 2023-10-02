@@ -1,0 +1,12 @@
+#!/bin/sh
+
+searchr=$(
+	tldr --list |
+		fzf-tmux -p 80%,60% -i --bind=tab:down --bind=btab:up \
+			--bind=ctrl-g:first --border=none \
+			--preview "tldr {1} --color=always" --preview-window=right,70%
+)
+
+if [ -n "$searchr" ]; then
+	tldr "$searchr" || exit 1
+fi
