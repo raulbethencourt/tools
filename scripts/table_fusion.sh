@@ -1,8 +1,8 @@
 #!/bin/bash
 
-source_db_name="source_database"
-source_table_name="source_table"
-dest_db_name="dest_database"
+source_db_name="$1"
+dest_db_name="$2"
+source_table_name="$3"
 
 column_mapping=("source_column1:dest_column1" "source_column2:dest_column2")
 
