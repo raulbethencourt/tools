@@ -2,12 +2,13 @@
 
 searchr=$(
 	fd --type f --hidden --exclude .git . "$HOME/" |
-        fzf-tmux -p 80%,60% -i --bind=tab:down --bind=btab:up \
+		fzf-tmux -p 80%,60% -i --bind=tab:down --bind=btab:up \
+			-i --bind=tab:down --bind=btab:up \
 			--bind=ctrl-g:first --border=none \
 			--preview "bat --color=always --style=numbers --line-range=:500 {}"
 )
 
 if [ -n "$searchr" ]; then
-	echo "lvim $searchr"
-	lvim "$searchr" || exit 1
+	echo "vim $searchr"
+	vim "$searchr" || exit 1
 fi

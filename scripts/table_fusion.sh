@@ -1,22 +1,46 @@
 #!/bin/bash
-
+#
 source_db_name="$1"
-dest_db_name="$2"
+dest_db_name=""
 source_table_name="$3"
 
-column_mapping=("source_column1:dest_column1" "source_column2:dest_column2")
 
-temp_dir=$(mktemp -d)
 
-mysqldump --login-path=bnspmsh "$source_db_name" "$source_table_name" >"$temp_dir/source_table_dump.sql"
+DEST_DB_NAME="$2"
 
-for mapping in "${column_mapping[@]}"; do
-	IFS=":" read -r source_column dest_column <<<"$mapping"
-	sed -i "s/\`$source_column\`/\`$dest_column\`/g" "$temp_dir/source_table_dump.sql"
+COLUMN_MAPPING=(
+    "src_column1:dest_column1"
+    "src_column2:dest_column2"
+)
+
+ERROR_LOG="error.log"
+
+TABLES=(
+    "table1"
+    "table2"
+)
+
+# Loop through each table
+for TABLE in "${TABLES[@]}"; do
+    # Clear the error log for each table
+    > "$ERROR_LOG"
+
+    # Generate the column mapping for the current table
+    MAPPING=""
+    for COLUMN_PAIR in "${COLUMN_MAPPING[@]}"; do
+        # Split the mapping into source and destination columns
+        IFS=":" read -r SRC_COLUMN DEST_COLUMN <<< "$COLUMN_PAIR"
+        MAPPING="$MAPPING, $SRC_COLUMN AS $DEST_COLUMN"
+    done
+
+    # Remove the leading comma and space
+    MAPPING="${MAPPING#, }"
+
+    # MySQL query to select and insert data with column mapping
+    QUERY="INSERT INTO $DEST_DB_NAME.$TABLE SELECT $MAPPING FROM $SRC_DB_NAME.$TABLE"
+
+    # Execute the query
+    mysql --login-path=bnspmsh -e "$QUERY" || echo "Error copying data for table $TABLE" >> "$ERROR_LOG"
 done
 
-mysql --login-path=bnspmsh "$dest_db_name" <"$temp_dir/source_table_dump.sql"
-
-rm -rf "$temp_dir"
-
-echo "Data transfer complete."
+mysqldump --login-path=bnspmsh "$SRC_DB_NAME" > /path/to/backup/"$SRC_DB_NAME"_backup.sql || echo "Error creating database backup" >> "$ERROR_LOG"
