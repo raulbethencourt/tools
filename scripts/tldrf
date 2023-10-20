@@ -3,7 +3,7 @@
 searchr=$(
 	tldr --list |
 		fzf-tmux -p 80%,60% -i --bind=tab:down --bind=btab:up \
-			--bind=ctrl-g:first --border=none \
+			--bind=ctrl-g:first \
 			--preview "tldr {1} --color=always" --preview-window=right,70%
 )
 
