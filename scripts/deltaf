@@ -3,13 +3,13 @@
 result1=$(
 	fd --type f --hidden --exclude .git . "$HOME/" |
 		fzf-tmux -p 80%,60% -i --bind=tab:down --bind=btab:up \
-			--bind=ctrl-g:first --border=none \
+			--bind=ctrl-g:first \
 			--preview "bat --color=always --style=numbers --line-range=:500 {}"
 )
 result2=$(
 	fd --type f --hidden --exclude .git . "$HOME/" |
 		fzf-tmux -p 80%,60% -i --bind=tab:down --bind=btab:up \
-			--bind=ctrl-g:first --border=none \
+			--bind=ctrl-g:first \
 			--preview "bat --color=always --style=numbers --line-range=:500 {}"
 )
 
