@@ -1,7 +1,8 @@
 #!/bin/sh
 
 searchr=$(
-	fd --type d --hidden --exclude .git . "$HOME/" | 
+	# fd --type d --hidden --exclude .git . "$HOME/" | 
+	zoxide query -l | \
 		fzf-tmux -p 60%,50% -i --bind=tab:down --bind=btab:up \
 			--bind=ctrl-g:first --border=none
 )
