@@ -1,15 +1,13 @@
 #!/bin/sh
 
-PROJECTS_PATH="$HOME/sites"
-
 searchr=$(
-	find "$PROJECTS_PATH" -maxdepth 1 -type d \( ! -name sites \) -print0 |
-		xargs --null -I % basename % |
+	zoxide query -l | \
 		fzf-tmux -p 20%,50% -i --bind=tab:down --bind=btab:up \
 			--bind=ctrl-g:first
 )
 
 if [ -n "$searchr" ]; then
-	cd "$PROJECTS_PATH/$searchr" || exit 1
+	echo "cd $searchr"
+	cd "$searchr" || exit 1
 	vim . || exit 1
 fi
