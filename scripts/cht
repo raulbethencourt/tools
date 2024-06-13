@@ -1,6 +1,6 @@
 #!/bin/sh
 
-languages="$(echo "sh bash rust c php lua nodejs typescript html css javascript" | tr ' ' '\n')"
+languages="$(echo "sh bash rust c markdown php lua nodejs typescript html css javascript" | tr ' ' '\n')"
 core_utils="$(echo "tmux diff git man read xargs find fd mv sed awk rg grep tail df" | tr ' ' '\n')"
 
 selected="$(printf "%s" "$languages\n$core_utils" | fzf)"

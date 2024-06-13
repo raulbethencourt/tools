@@ -2,8 +2,8 @@
 
 searchr=$(
   zoxide query -l |
-    fzf-tmux -p 60%,50% -i --bind=tab:down --bind=btab:up \
+    fzf-tmux -p 60%,50% -i --bind=tab:up --bind=btab:down \
       --bind=ctrl-g:first
 )
 
-[ -n "$searchr" ] && cd "$searchr" || exit 1
+[ -n "$searchr" ] && cd "$searchr" || echo "Nothing found"
