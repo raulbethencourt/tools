@@ -6,5 +6,5 @@ searchr=$(
       --bind=ctrl-g:first
 )
 
-[ -n "$searchr" ] && cd "$searchr" || echo "Nothing found"
+[ -n "$searchr" ] && cd "$searchr" || echo "Nothing found" && return
 nvim .
