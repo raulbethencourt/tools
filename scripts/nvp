@@ -1,13 +1,10 @@
 #!/bin/sh
 
 searchr=$(
-	zoxide query -l | \
-		fzf-tmux -p 20%,50% -i --bind=tab:down --bind=btab:up \
-			--bind=ctrl-g:first
+  zoxide query -l |
+    fzf-tmux -p 60%,50% -i --bind=tab:up --bind=btab:down \
+      --bind=ctrl-g:first
 )
 
-if [ -n "$searchr" ]; then
-	echo "cd $searchr"
-	cd "$searchr" || exit 1
-	vim . || exit 1
-fi
+[ -n "$searchr" ] && cd "$searchr" || echo "Nothing found" && return
+nvim .
