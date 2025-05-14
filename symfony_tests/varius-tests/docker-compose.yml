@@ -1,0 +1,108 @@
+services:
+    web1:
+        container_name: "sugar-modele14-web1"
+        image: sugarcrmdevelopers/sugardockerized:php8.2-apache-latest
+        ports:
+            - "8080:80"
+            - "8084:6379"
+        extra_hosts:                                   
+            - "docker.local:127.0.0.1"                        
+            - "host.docker.internal:host-gateway"
+        external_links:
+           - "sugar-modele14-redis:sugar-redis"
+        environment:
+            - "APACHE_RUN_USER=sugar"
+            - "APACHE_RUN_GROUP=sugar"
+        volumes:
+            - "/home/rabeta/dev/bns/tools/bin//..:/var/www/tools"
+            - .:/var/www/html
+        depends_on:
+            - mysql
+            - elasticsearch
+            - redis
+            - permissions
+            - testsmtp
+        links:
+            - mysql
+            - elasticsearch
+            - redis
+            - testsmtp
+    cron:
+        container_name: "sugar-modele14-cron"
+        image: sugarcrmdevelopers/sugardockerized:php8.2-cron-latest
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        volumes:
+            - .:/var/www/html/sugar
+        depends_on:
+            - mysql
+            - elasticsearch
+            - redis
+            - permissions
+            - testsmtp
+        links:
+            - mysql
+            - elasticsearch
+            - redis
+            - testsmtp
+    mysql:
+        container_name: "sugar-modele14-mysql"
+        image: sugarcrmdevelopers/sugardockerized:mysql8.0.32-latest
+        ports:
+            - "8085:3306"
+        expose:
+            - "8085"
+        command: --sql-mode="" --ssl --tls-version "TLSv1.2"
+        volumes:
+            - "/home/rabeta/dev/bns/tools/bin//..:/var/www/tools"
+            - ../.docker/mysql/80/8080:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_USER=sugar
+            - MYSQL_PASSWORD=sugar
+    elasticsearch:
+        image: elasticsearch:8.4.3
+        container_name: "sugar-modele14-elasticsearch"
+        ports:
+            - "8081:9200"
+            - "8082:9300"
+        volumes:
+            - ../.docker/elasticsearch/84/8080:/usr/share/elasticsearch/data
+        environment:
+            - node.name=sugar1
+            - cluster.name=sugarcrm13
+            - discovery.type=single-node
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - xpack.security.enabled=false
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+            nofile:
+                soft: 65536
+                hard: 65536
+    redis:
+        container_name: "sugar-modele14-redis"
+        image: redis:latest
+        ports:
+            - "8083:6379"
+        volumes:
+            - "/home/rabeta/dev/bns/tools/bin//..:/var/www/tools"
+            - ../.docker/redis/8080:/data
+    permissions:
+        container_name: "sugar-modele14-permissions"
+        image: sugarcrmdevelopers/sugardockerized:permissions-latest
+        volumes:
+            - .:/var/www/html
+    testsmtp:
+        container_name: "sugar-modele14-smtp"
+        image: sugarcrmdevelopers/sugardockerized:testsmtp-latest
+    mailhog:
+      container_name: 'sugar-modele14-mailhog'
+      image: mailhog/mailhog
+      ports:
+        - "8086:1025"
+        - "8087:8025"
+volumes:
+    es-data01:
+        driver: local
