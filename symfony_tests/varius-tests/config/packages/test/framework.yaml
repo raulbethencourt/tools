@@ -1,0 +1,4 @@
+# sf4: config/packages/test/framework.yaml
+liip_test_fixtures:
+    cache_db:
+        sqlite: 'Liip\TestFixturesBundle\Services\DatabaseBackup\SqliteDatabaseBackup'

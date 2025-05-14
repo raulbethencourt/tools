@@ -1,0 +1,2 @@
+CentOS 213.182.42.136 4pvKl?F9Y5gzJK
+Debian raul-bns@bns-lamp-18.ecritel.net:SSH:raul-bns nil
