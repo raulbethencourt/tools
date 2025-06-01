@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# Error handling function
-error_exit() {
-  echo "Error: $1" >&2 && exit "${2:-1}"
-}
+. "$SCRIPTSPATH"/library.sh && initANSI # Get colors.
 
 help=1
 verbose=0
