@@ -242,7 +242,7 @@ echon() {
 }
 getFileWithFzf() {
   file="$1"
-  [ ! -f "$file" ] && error_exit "$file is not a proper file." 2
+  [ ! -f "$file" ] && [ ! -d "$file" ] && error_exit "$file is not a proper file or directory." 2
 
   FD=$(find "$file" -mindepth 1 -maxdepth 1 ! -name '.*')
 
