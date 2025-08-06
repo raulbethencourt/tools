@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Add colors to output
 initANSI() {
   # Foreground colors
   blackf=$(tput setaf 0)
@@ -31,6 +32,19 @@ initANSI() {
   inver=$(tput rev)
 
   reset=$(tput sgr0)
+}
+normalize() {
+  # Return string with first char uppercase, next two lowercase.
+  firstPart="$(/bin/echo -n "$1" | cut -c1 | tr '[:lower:]' '[:upper:]')"
+  secondPart="$(echo "$1" | cut -c2-3 | tr '[:upper:]' '[:lower:]')"
+  echo "$firstPart$secondPart"
+}
+error_exit() {
+  echo "${redf}Error:${reset} $1" >&2 && exit "${2:-1}"
+}
+usage_exit() {
+  script="$(basename "$0")"
+  echo "${purplef}Usage:${reset} $script $1" >&2 && exit "${2:-1}"
 }
 validint() {
   # Validate first field and test that value against min value $2 and/or
@@ -228,7 +242,7 @@ echon() {
 }
 getFileWithFzf() {
   file="$1"
-  [ -z "$file" ] && exit 1
+  [ ! -f "$file" ] && [ ! -d "$file" ] && error_exit "$file is not a proper file or directory." 2
 
   FD=$(find "$file" -mindepth 1 -maxdepth 1 ! -name '.*')
 
