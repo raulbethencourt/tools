@@ -136,6 +136,7 @@ hello vim
 ```
 
 The breakdown:
+
 - `.!` executes the filter command on the current line.
 - `tr '[:lower:]' '[:upper:]'` calls the `tr` command to replace all lowercase characters with uppercase ones.
 
@@ -149,18 +150,19 @@ Let's assume that you need to remove the second column on both lines with the `a
 
 The result:
 
-```
+```vim
 hello
 hello
 ```
 
 The breakdown:
+
 - `:%!` executes the filter command on all lines (`%`).
 - `awk "{print $1}"` prints only the first column of the match.
 
 You can chain multiple commands with the chain operator (`|`) just like in the terminal. Let's say you have a file with these delicious breakfast items:
 
-```
+```vim
 name price
 chocolate pancake 10
 buttermilk pancake 9
@@ -174,18 +176,26 @@ If you need to sort them based on the price and display only the menu with an ev
 ```
 
 The result:
-```
+
+```vim
 buttermilk pancake 9
 chocolate pancake 10
 blueberry pancake 12
 ```
 
 The breakdown:
+
 - `:%!` applies the filter to all lines (`%`).
 - `awk 'NR > 1'` displays the texts only from row number two onwards.
 - `|` chains the next command.
 - `sort -nk 3` sorts numerically (`n`) using the values from column 3 (`k 3`).
 - `column -t` organizes the text with even spacing.
+
+Changing column order inside vim.
+
+```vim
+:%!awk '{print $2, $1}'
+```
 
 ## Normal Mode Command
 
@@ -199,11 +209,13 @@ salve vim
 ```
 
 To uppercase the current line and the line below, you can run:
+
 ```
 !jtr '[a-z]' '[A-Z]'
 ```
 
 The breakdown:
+
 - `!j` runs the normal command filter operator (`!`) targetting the current line and the line below it. Recall that because it is a normal mode operator, the grammar rule `verb + noun` applies. `!` is the verb and `j` is the noun.
 - `tr '[a-z]' '[A-Z]'` replaces the lowercase letters with the uppercase letters.
 

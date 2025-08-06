@@ -8,6 +8,25 @@
 * Windows         */Program Files/MySQL/MySQL *version*/bin*
 * Xampp           */xampp/mysql/bin*
 
+## Subqueries with EXISTS or NOT EXISTS
+
+```sql
+SELECT DISTINCT store_type 
+FROM stores
+WHERE EXISTS (
+  SELECT * 
+  FROM cities_stores
+  WHERE cities_stores.store_type = stores.store_type
+);
+
+SELECT DISTINCT store_type 
+FROM stores
+WHERE NOT EXISTS (
+  SELECT * FROM cities_stores
+  WHERE cities_stores.store_type = stores.store_type
+);
+```
+
 ## Find duplicate values in one column
 
 ```sql
@@ -32,6 +51,17 @@ DROP COLUMN prospection_type;
 
 ```sql
 TRUNCATE TABLE `table`;
+```
+
+## Get size of db
+
+```sql
+SELECT 
+    table_schema 'Database Name',
+    SUM(data_length + index_length) 'Size in Bytes',
+    ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) 'Size in MiB'
+FROM information_schema.tables 
+WHERE table_schema = 'sakila';
 ```
 
 ## Get size of each table
@@ -98,6 +128,12 @@ SHOW GRANTS FOR 'someuser'@'localhost';
 
 ```sql
 REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'someuser'@'localhost';
+```
+
+## Change Password
+
+```sql
+ALTER USER 'someuser' IDENTIFIED BY new_password;
 ```
 
 ## Delete User
