@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# shellcheck disable=SC1091
+. "$SCRIPTSPATH"/library.sh && initANSI # Get colors.
+
 # Exit on error, undefined variables, and propagate pipe failures
 set -euo pipefail
 
@@ -8,11 +11,11 @@ API_ENDPOINT="https://models.github.ai/inference/chat/completions"
 API_TOKEN="${GITHUB_TOKEN:-}"
 DEFAULT_OUTPUT_DIR="/home/rabeta/vaults/functional_doc"
 OUTPUT_DIR="${DEFAULT_OUTPUT_DIR}"
-MAX_FILES_PER_BATCH=5
+MAX_FILES_PER_BATCH=3
 
 # Function to display usage instructions
 usage() {
-  cat <<EOF
+  cat <<EOF >&2
 Usage: $(basename "$0") [options] <search_path>
 
 Options:
@@ -34,28 +37,11 @@ EOF
 
 # Function to check if GitHub API token is available
 check_api_token() {
-  if [[ -z "$API_TOKEN" ]]; then
-    echo "Error: GITHUB_TOKEN environment variable is not set" >&2
-    echo "Please set it with: export GITHUB_TOKEN='your-github-token-here'" >&2
-    exit 1
-  fi
-}
-
-# Function to ensure output directory exists
-ensure_output_dir() {
-  if [[ ! -d "$OUTPUT_DIR" ]]; then
-    mkdir -p "$OUTPUT_DIR" || {
-      echo "Error: Could not create output directory: $OUTPUT_DIR" >&2
-      exit 1
-    }
-  fi
-}
-
-# Function to sanitize filenames for safe usage as part of file paths
-sanitize_filename() {
-  local filename="$1"
-  # Replace problematic characters with underscores
-  echo "${filename//[^a-zA-Z0-9._-]/_}"
+  [[ -z "$API_TOKEN" ]] && {
+    error_exit "GITHUB_TOKEN environment variable is not set.\n" \
+      "Please set it with: export GITHUB_TOKEN='your-github-token-here'" 1
+  }
+  return 0
 }
 
 # Function to process a batch of files and generate documentation
@@ -76,21 +62,23 @@ process_file_batch() {
     local relative_path="${file#"$search_path"/}"
 
     # Use the first file for naming the output
-    if [[ -z "$output_filename" ]]; then
+    [[ -z "$output_filename" ]] && {
       local sanitized
       sanitized=$(sanitize_filename "$relative_path")
       output_filename="${sanitized%.*}_documentation.md"
-    fi
+    }
 
     # Add file path as a header
     files_description+="## File: $relative_path\n\n"
 
-    # Add file content
-    file_contents+="File: $relative_path\n\n\`\`\`\n$(cat "$file")\n\`\`\`\n\n"
+    # Add truncated file content (e.g., first 100 lines)
+    local truncated_content
+    truncated_content=$(head -n 100 "$file")
+    file_contents+="File: $relative_path\n\n\`\`\`\n$truncated_content\n\`\`\`\n\n"
   done
 
   # Skip if no valid files
-  [[ -z "$files_description" ]] && return
+  [[ -z "$files_description" ]] && return 0
 
   echo "Generating documentation for batch with primary file: ${file_list[0]}"
 
@@ -98,20 +86,28 @@ process_file_batch() {
   local prompt="I'm analyzing a legacy SugarCRM PHP application. Please provide a comprehensive functional explanation of the following code files, focusing on their purpose, functionality, and how they relate to each other. Format your response in Markdown with clear sections for each file and their relationships:\n\n${file_contents}"
 
   # Send to GitHub Inference API
+  local json_payload
+  json_payload=$(jq -n \
+    --arg model "openai/gpt-4.1" \
+    --arg system_content "You are a senior SugarCRM and PHP developer documenting a complex legacy application. Focus on functional explanations including business logic, data flow, and relationships between files. Structure your response as a clear, comprehensive Markdown document that will be useful for developers who need to understand the system. The answer must be in french." \
+    --arg user_content "$prompt" \
+    --argjson temperature 0.5 \
+    '{
+    model: $model,
+    messages: [
+      {role: "system", content: $system_content},
+      {role: "user", content: $user_content}
+    ],
+    temperature: $temperature
+  }')
+
   local response
   response=$(curl -s -X POST "$API_ENDPOINT" \
     -H "Authorization: Bearer $API_TOKEN" \
     -H "Accept: application/vnd.github+json" \
     -H "X-GitHub-Api-Version: 2022-11-28" \
     -H "Content-Type: application/json" \
-    -d "{
-      \"model\": \"openai/gpt-4.1\",
-      \"messages\": [
-        {\"role\": \"system\", \"content\": \"You are a senior SugarCRM and PHP developer documenting a complex legacy application. Focus on functional explanations including business logic, data flow, and relationships between files. Structure your response as a clear, comprehensive Markdown document that will be useful for developers who need to understand the system.\"}, 
-        {\"role\": \"user\", \"content\": $(printf '%s' "$prompt" | jq -s -R .)}
-      ],
-      \"temperature\": 0.5
-    }") || {
+    -d "$json_payload") || {
     echo "API request failed" >&2
     return 1
   }
@@ -141,6 +137,10 @@ process_file_batch() {
   echo "Documentation saved to: $output_path"
   echo "----------------------------------------"
 }
+
+# =================
+# BEGIN MAIN SCRIPT
+# =================
 
 # Parse command line arguments
 search_path=""
@@ -173,8 +173,7 @@ while [[ $# -gt 0 ]]; do
     if [[ -z "$search_path" ]]; then
       search_path="$1"
     else
-      echo "Error: Unexpected argument: $1" >&2
-      usage
+      error_usage "Unexpected argument: $1"
     fi
     shift
     ;;
@@ -182,14 +181,12 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Validate arguments
-[ -z "$search_path" ] && {
-  echo "Error: Search path is required" >&2
-  usage
+[[ -z "$search_path" ]] && {
+  error_usage "Search path is required"
 }
 
-[ ! -d "$search_path" ] && {
-  echo "Error: '$search_path' is not a valid directory" >&2
-  exit 1
+[[ ! -d "$search_path" ]] && {
+  error_exit "'$search_path' is not a valid directory" 2
 }
 
 # Check if GitHub token is available
@@ -200,38 +197,34 @@ ensure_output_dir
 
 # Construct find command based on arguments
 find_cmd="find \"$search_path\" -type"
-if [[ "$search_type" == "f" ]]; then
-  find_cmd+=" f"
-elif [[ "$search_type" == "d" ]]; then
-  find_cmd+=" d"
-else
-  find_cmd+=" f" # Default to files
-fi
+case "$search_type" in
+"d") find_cmd+=" d" ;;
+*) find_cmd+=" f" ;;
+esac
 
-[ -n "$name_pattern" ] && find_cmd+=" -name \"$name_pattern\""
+[[ -n "$name_pattern" ]] && find_cmd+=" -iname \"$name_pattern\""
 
 # Execute find command and collect files
 mapfile -t all_files < <(eval "$find_cmd")
 
 # Skip if no files found
-if [[ "${#all_files[@]}" -eq 0 ]]; then
-  echo "No files found matching criteria."
-  exit 0
-fi
+[[ "${#all_files[@]}" -eq 0 ]] && {
+  error_exit "No files found matching criteria." 1
+}
 
 echo "Found ${#all_files[@]} files/directories matching criteria."
 
 # Process files in batches to maintain context
-if [[ "$search_type" == "f" ]]; then
+if [[ "$search_type" == "d" ]]; then
+  # For directories, just list them
+  for dir in "${all_files[@]}"; do
+    echo "Directory: $dir (skipping explanation)"
+  done
+else
   for ((i = 0; i < ${#all_files[@]}; i += batch_size)); do
     # Get batch of files
     batch=("${all_files[@]:i:batch_size}")
     process_file_batch "${batch[@]}"
-  done
-elif [[ "$search_type" == "d" ]]; then
-  # For directories, just list them
-  for dir in "${all_files[@]}"; do
-    echo "Directory: $dir (skipping explanation)"
   done
 fi
 
