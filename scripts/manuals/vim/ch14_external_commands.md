@@ -221,6 +221,14 @@ The breakdown:
 
 The filter normal command only works on motions / text objects that are at least one line or longer. If you had tried running `!iwtr '[a-z]' '[A-Z]'` (execute `tr` on inner word), you will find that it applies the `tr` command on the entire line, not the word your cursor is on.
 
+## Remove duplicated lines
+
+Sort lines and remove duplicates with "(u)nique" flag
+
+```Vim
+:sort u
+```
+
 ## Learn External Commands the Smart Way
 
 Vim is not an IDE. It is a lightweight modal editor that is highly extensible by design. Because of this extensibility, you have an easy access to any external command in your system. Armed with these external commands, Vim is one step closer from becoming an IDE. Someone said that the Unix system is the first IDE ever.

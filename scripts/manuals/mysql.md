@@ -8,6 +8,56 @@
 * Windows         */Program Files/MySQL/MySQL *version*/bin*
 * Xampp           */xampp/mysql/bin*
 
+## Find and kill mysql process
+
+```sql
+# revover full list of queries
+show full processlist;
+
+kill <process_id>;
+```
+
+## Analyse query performance
+
+```sql
+# recover timing with miliseconds
+EXPLAIN ANALYZE select * from ...
+
+# get index informations
+EXPLAIN select * from ...
+
+# exhaustive informations
+FLUSH STATUS;select * from ...;SHOW SESSION STATUS LIKE "Handler%";
+```
+
+## Export table en csv
+
+To export table to csv file first we need to find directory output :
+
+```sql
+SHOW VARIABLES LIKE "secure_file_priv";
+```
+
+```bash
++------------------+---------------------------------+
+| Variable_name    | Value                           |
++------------------+---------------------------------+
+| secure_file_priv | /var/lib/mysql-files/           |
++------------------+---------------------------------+
+1 row in set (0.02 sec)
+```
+
+Then we have this query :
+
+```sql
+SELECT * FROM bns_orders
+INTO OUTFILE '/var/lib/mysql-files/bns_orders.csv' 
+FIELDS ENCLOSED BY '"' 
+TERMINATED BY ',' 
+ESCAPED BY '"' 
+LINES TERMINATED BY '\r\n';
+```
+
 ## Subqueries with EXISTS or NOT EXISTS
 
 ```sql
