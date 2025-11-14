@@ -148,6 +148,15 @@ If the bible is missing something, open an issue and a solution will be found.
 
 <br>
 
+## Miscellaneous
+
+* Find not staged files with git status
+
+```bash
+
+gst -s | grep "^.[^ ]"
+```
+
 <!-- CHAPTER START -->
 # FOREWORD
 

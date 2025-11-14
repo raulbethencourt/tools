@@ -8,6 +8,24 @@
 * Windows         */Program Files/MySQL/MySQL *version*/bin*
 * Xampp           */xampp/mysql/bin*
 
+## Mysqldump for update db
+
+```sql
+mysqldump --login-path=$login_path --add-drop-table $database > $file.sql
+```
+
+## Mysqldump for specific table
+
+```sql
+mysqldump --lock-all-tables --where="custom_module like '%Tontouta%'" devccincarps fields_meta_data > fields_meta_data.sql
+```
+
+## Mysqldump specific table, and replace existing entries
+
+```sql
+mysqldump --login-path=$login_path --no-create-info --skip-comments --replace $data_base $table
+
+
 ## Find and kill mysql process
 
 ```sql
