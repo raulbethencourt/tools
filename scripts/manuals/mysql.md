@@ -8,6 +8,57 @@
 * Windows         */Program Files/MySQL/MySQL *version*/bin*
 * Xampp           */xampp/mysql/bin*
 
+## Drop view
+
+```sql
+DROP VIEW [IF EXISTS] view_name;
+```
+
+## Convert table to utf8
+
+```sql
+ALTER TABLE bns_products CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+```
+
+## Check Database Character Set and Collation
+
+```sql
+ SHOW CREATE DATABASE your_database_name;
+
+ # Or if you're already connected to your database:
+
+ SELECT @@character_set_database, @@collation_database;
+```
+
+## Check All Databases
+
+```sql
+ SELECT
+     SCHEMA_NAME as 'Database',
+     DEFAULT_CHARACTER_SET_NAME as 'Charset',
+     DEFAULT_COLLATION_NAME as 'Collation'
+ FROM information_schema.SCHEMATA;
+```
+
+## Check Server Default Settings
+
+```sql
+ SHOW VARIABLES LIKE 'character_set%';
+ SHOW VARIABLES LIKE 'collation%';
+```
+
+## Check Specific Tables in Your SugarCRM Database
+
+```sql
+ SELECT
+     TABLE_SCHEMA as 'Database',
+     TABLE_NAME as 'Table',
+     TABLE_COLLATION as 'Collation'
+ FROM information_schema.TABLES
+ WHERE TABLE_SCHEMA = 'your_sugarcrm_database_name'
+ ORDER BY TABLE_NAME;
+```
+
 ## Mysqldump for update db
 
 ```sql
