@@ -28,9 +28,40 @@
 - [MySQL Server](#mysql-server)
 - [Other](#other)
 
-# Basics
+## Miscellaneous
 
-## File Hierarchy Standard (FHS)
+### Find not staged files with git status
+
+```bash
+gst -s | grep "^.[^ ]"
+```
+
+### Copying direactory Trees with tar and Pipes
+
+> [!IMPORTANT]
+> The v flag always use it in the writing tar not into the reading tar
+
+- The logic is like "reading-tar | writing-tar"
+
+```bash
+# First type
+mkdir /work/bkup/jane
+cd /home/jane
+tar cf - . | (cd /work/bkup/jane && tar xvf -)
+
+# Second with -C flag
+cd /home/jane
+tar cf - . | tar xvf - -C /work/bkup/jane
+
+# Third trougth ssh 
+ssh kumquat mkdir /work/bkup/jane
+cd /home/jane
+tar cf - . | ssh kumquat 'cd /work/bkup/jane && tar xvf -'
+```
+
+## Basics
+
+### File Hierarchy Standard (FHS)
 
 | Path   | Content                             |
 | ------ | ----------------------------------- |
