@@ -4,18 +4,21 @@ error_exit() {
   echo "Error: $1" >&2
   exit "${2:-1}"
 }
+
 error_usage() {
   echo "Error: $1" >&2
   usage || {
     error_exit "Function usage don't fund it" 1
   }
 }
+
 # Function to sanitize filenames for safe usage as part of file paths
 sanitize_filename() {
   local filename="$1"
   # Replace problematic characters with underscores
   echo "${filename//[^a-zA-Z0-9._-]/_}"
 }
+
 # Function to ensure output directory exists
 ensure_output_dir() {
   [[ ! -d "$OUTPUT_DIR" ]] && {
@@ -25,6 +28,7 @@ ensure_output_dir() {
   }
   return 0
 }
+
 initANSI() {
   # Foreground colors
   blackf=$(tput setaf 0)
